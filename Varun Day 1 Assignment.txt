@@ -1,0 +1,160 @@
+Day 1 Assignment:
+========================
+1. list out all databases in Mongo Server
+>show dbs;
+
+2. how to choose your database as current database
+>use mydatabase;
+
+3. list out all collections in a databases
+>show collections;
+
+4. what will happen while using below command (assume mydb is not created yet)
+	use mydb;
+>First it will switch to it,then when a new collection is created a new database created sucessfully;
+
+5.  create a collection (employee_db) has employeeid,name,gender, salary(2000,80000),location(chennai,hyderabad,mumbai),department(admin,accounts,HR,insurance,banking),domain(Java,Python,MERN,MEAN),skills (array of skill like [Angular,react,nodejs,expressjs,....])
+>db.createCollection("employee_db", {
+   validator: {
+      $jsonSchema: {
+         bsonType: "object",
+         required: ["employeeid", "name", "gender", "salary", "location", "department", "domain", "skills"],
+         properties: {
+            employeeid: {
+               bsonType: "int"
+            },
+            name: {
+               bsonType: "string"
+            },
+            gender: {
+               bsonType: "string"
+            },
+            salary: {
+               bsonType: "int",
+               minimum: 2000,
+               maximum: 80000
+            },
+            location: {
+               bsonType: "string",
+               enum: ["chennai", "hyderabad", "mumbai"]
+            },
+            department: {
+               bsonType: "string",
+               enum: ["admin", "accounts", "HR", "insurance", "banking"]
+            },
+            domain: {
+               bsonType: "string",
+               enum: ["Java", "Python", "MERN", "MEAN"]
+            },
+            skills: {
+               bsonType: "array"
+            }
+         }
+      }
+   }
+});
+
+6. insert 5 records in each location and each domain together
+>db.employee_db.insertMany([
+    { employeeid: 1, name: "John", gender: "male", salary: 60000, location: "chennai", department: "admin", domain: "Java", skills: ["Angular", "react", "nodejs"] },
+    { employeeid: 2, name: "Alice", gender: "female", salary: 50000, location: "chennai", department: "accounts", domain: "Python", skills: ["Java", "Python", "MERN"] },
+    { employeeid: 3, name: "Bob", gender: "male", salary: 70000, location: "chennai", department: "HR", domain: "MERN", skills: ["Java", "MERN", "MEAN"] },
+    { employeeid: 4, name: "Emma", gender: "female", salary: 55000, location: "chennai", department: "insurance", domain: "MEAN", skills: ["Python", "MEAN", "Java"] },
+    { employeeid: 5, name: "Mike", gender: "male", salary: 75000, location: "chennai", department: "banking", domain: "Python", skills: ["Angular", "react", "nodejs"] },
+    { employeeid: 6, name: "Eva", gender: "female", salary: 65000, location: "hyderabad", department: "admin", domain: "Java", skills: ["Angular", "react", "nodejs"] },
+    { employeeid: 7, name: "David", gender: "male", salary: 55000, location: "hyderabad", department: "accounts", domain: "Python", skills: ["Java", "Python", "MERN"] },
+    { employeeid: 8, name: "Sophia", gender: "female", salary: 72000, location: "hyderabad", department: "HR", domain: "MERN", skills: ["Java", "MERN", "MEAN"] },
+    { employeeid: 9, name: "James", gender: "male", salary: 60000, location: "hyderabad", department: "insurance", domain: "MEAN", skills: ["Python", "MEAN", "Java"] },
+    { employeeid: 10, name: "Olivia", gender: "female", salary: 78000, location: "hyderabad", department: "banking", domain: "Python", skills: ["Angular", "react", "nodejs"] },
+    { employeeid: 11, name: "Isaac", gender: "male", salary: 68000, location: "mumbai", department: "admin", domain: "Java", skills: ["Angular", "react", "nodejs"] },
+    { employeeid: 12, name: "Mia", gender: "female", salary: 60000, location: "mumbai", department: "accounts", domain: "Python", skills: ["Java", "Python", "MERN"] },
+    { employeeid: 13, name: "Jacob", gender: "male", salary: 71000, location: "mumbai", department: "HR", domain: "MERN", skills: ["Java", "MERN", "MEAN"] },
+    { employeeid: 14, name: "Ava", gender: "female", salary: 57000, location: "mumbai", department: "insurance", domain: "MEAN", skills: ["Python", "MEAN", "Java"] },
+    { employeeid: 15, name: "William", gender: "male", salary: 76000, location: "mumbai", department: "banking", domain: "Python", skills: ["Angular", "react", "nodejs"] }
+]);
+
+7. insert record which hs employeename as Fransy,female,salary 45000,chennai,admin,no domain and skills
+>db.employee_db.insertOne({
+    employeeid: 16,
+    name: "Fransy",
+    gender: "female",
+    salary: 45000,
+    location: "chennai",
+    department: "admin",
+    domain: null,
+    skills: []
+});
+
+8. list out all employees works in hyderabad
+>db.employee_db.find({ location: "hyderabad" });
+
+9. list out all employee information who got salary more than 50000
+>db.employee_db.find({ "salary": { $gt: 50000 } });
+
+10. list out all employee information without id
+>db.employee_db.find({}, { _id: 0 });
+
+11. list all male employees
+>db.employee_db.find({ gender: "male" });
+
+12. list all female employees
+>db.employee_db.find({ gender: "female" });
+
+13. list all employee who have skill as react
+>db.employee_db.find({ skills: "React" });
+
+14 create a collection  as product which has name, price, inventory : {qtyavailable, warehouse}
+>db.createCollection("product", {
+   validator: {
+      $jsonSchema: {
+         bsonType: "object",
+         required: ["name", "price", "inventory"],
+         properties: {
+            name: {
+               bsonType: "string",
+               description: "must be a string and is required"
+            },
+            price: {
+               bsonType: "double",
+               description: "must be a double and is required"
+            },
+            inventory: {
+               bsonType: "object",
+               required: ["qtyavailable", "warehouse"],
+               properties: {
+                  qtyavailable: {
+                     bsonType: "int",
+                     description: "must be an integer and is required"
+                  },
+                  warehouse: {
+                     bsonType: "string",
+                     description: "must be a string and is required"
+                  }
+               }
+            }
+         }
+      }
+   }
+});
+
+15. insert record with different valus
+>db.product.insertMany([
+   { name: "Product4", price: 15.99, inventory: { qtyavailable: 80, warehouse: "D" } },
+   { name: "Product5", price: 25.99, inventory: { qtyavailable: 20, warehouse: "E" } },
+   { name: "Product6", price: 35.99, inventory: { qtyavailable: 10, warehouse: "F" } },
+   { name: "Product7", price: 45.99, inventory: { qtyavailable: 30, warehouse: "G" } },
+   { name: "Product8", price: 55.99, inventory: { qtyavailable: 15, warehouse: "H" } },
+   { name: "Product9", price: 65.99, inventory: { qtyavailable: 5, warehouse: "I" } },
+   { name: "Product10", price: 75.99, inventory: { qtyavailable: 25, warehouse: "J" } },
+   { name: "Product11", price: 85.99, inventory: { qtyavailable: 50, warehouse: "K" } },
+   { name: "Product12", price: 95.99, inventory: { qtyavailable: 70, warehouse: "L" } },
+   { name: "Product13", price: 105.99, inventory: { qtyavailable: 90, warehouse: "M" } }
+]);
+
+16. list out all product which is soldout
+>db.product.find({ "inventory.qtyavailable": 0 });
+
+
+
+
+	
